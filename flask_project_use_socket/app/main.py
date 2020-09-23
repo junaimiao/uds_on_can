@@ -29,7 +29,7 @@ app.register_blueprint(login_and_register, url_prefix="/login_and_register")
 app.register_blueprint(home, url_prefix="/home")
 
 def open_auto_diagnostic():
-   os.system('python C:\\Users\\Administrator\\Desktop\\project_auto_uds_by_python\\uds_on_can\\auto_diagnostic_final_for_web.py')
+   os.system('python ../../auto_diagnostic_final_for_web.py')
 
 @app.route('/')
 def index():
