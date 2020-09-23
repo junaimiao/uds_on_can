@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="../../static/layui/css/layui.css" media="all" />
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.3.0/socket.io.js"></script>
+  <script type="text/javascript" src="https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js"></script>
+  <title>自动化诊断工具</title>
+</head>
+
+<body>
+  <div class="layui-layout layui-layout-admin">
+    <div class="layui-header">
+      <div class="layui-logo">HZC_TOOL</div>
+      <!-- 头部区域（可配合layui已有的水平导航） -->
+      <ul class="layui-nav layui-layout-left">
+        <li class="layui-nav-item"><a href="">待定</a></li>
+        <li class="layui-nav-item"><a href="">待定</a></li>
+        <li class="layui-nav-item"><a href="">待定</a></li>
+        <li class="layui-nav-item">
+          <a href="javascript:;">其它系统</a>
+          <dl class="layui-nav-child">
+            <dd><a href="">邮件管理</a></dd>
+            <dd><a href="">消息管理</a></dd>
+            <dd><a href="">授权管理</a></dd>
+          </dl>
+        </li>
+      </ul>
+      <ul class="layui-nav layui-layout-right">
+        <li class="layui-nav-item">
+          <a href="javascript:;">
+            <img src="http://t.cn/RCzsdCq" class="layui-nav-img">
+            胡志成
+          </a>
+          <dl class="layui-nav-child">
+            <dd><a href="">基本资料</a></dd>
+            <dd><a href="">安全设置</a></dd>
+          </dl>
+        </li>
+        <li class="layui-nav-item"><a href="">退了</a></li>
+      </ul>
+    </div>
+    
+    <div class="layui-side layui-bg-black">
+      <div class="layui-side-scroll">
+        <!-- 左侧导航区域（可配合layui已有的垂直导航） -->
+        <ul class="layui-nav layui-nav-tree"  lay-filter="nav_left">
+          <li class="layui-nav-item layui-nav-itemed">
+            <a class="" href="javascript:;">基本功能</a>
+            <dl class="layui-nav-child">
+              <dd class="layui-this"><a href="javascript:;">实时数据</a></dd>
+              <dd><a href="javascript:;">诊断用例</a></dd>
+              <dd><a href="javascript:;">自动诊断</a></dd>
+              <!-- <dd><a href="">超链接</a></dd> -->
+            </dl>
+          </li>
+          <li class="layui-nav-item">
+            <a href="javascript:;">其它</a>
+            <dl class="layui-nav-child">
+              <dd><a href="javascript:;">其它</a></dd>
+              <dd><a href="javascript:;">其它</a></dd>
+              <dd><a href="">其它</a></dd>
+            </dl>
+          </li>
+          <!-- <li class="layui-nav-item"><a href="">云市场</a></li>
+          <li class="layui-nav-item"><a href="">发布商品</a></li> -->
+        </ul>
+      </div>
+    </div>
+    
+    <div class="layui-body">
+      <!-- 内容主体区域 -->
+      <!-- <div style="padding: 15px;">内容主体区域</div> -->
+      <!-- <div class="message">
+        aaaa
+      </div>
+
+      <div class="diagnosticCase">
+        bbbbbb
+      </div> -->
+
+      <div class="message">
+        <iframe src="http://127.0.0.1:5000/message" style="width: 100%;height: 700px;"></iframe>
+      </div>
+    </div>
+    
+    <div class="layui-footer">
+      <!-- 底部固定区域 -->
+      © HZC_TOOL
+    </div>
+  </div>
+</body>
+<script src="../../static/layui/layui.all.js"></script>
+<script>
+  layui.use('element', function () {
+    var element = layui.element; //导航的hover效果、二级菜单等功能，需要依赖element模块
+
+    //监听导航点击
+    element.on('nav(nav_left)', function (elem) {
+      //console.log(elem)
+      layer.msg(elem.text());
+    });
+  });
+</script>
+
+</html>

@@ -1,6 +1,7 @@
 from flask import Flask, redirect, url_for, render_template, request, abort
 from controllers.login_and_register import login_and_register
 from controllers.home import home
+from werkzeug.utils import secure_filename
 
 from flask_socketio import SocketIO
 # 引入can报文处理文件
@@ -17,6 +18,7 @@ from multiprocessing import Process
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'hzc'
+app.config['UPLOAD_FOLDER'] = 'upload/'
 # websocket对象实例
 socketio = SocketIO(app)
 
@@ -33,10 +35,31 @@ def open_auto_diagnostic():
    # print("open_auto_diagnostic")
    os.system('start python E:\\FileForHZC\\02.git\\project_auto_uds_by_python\\uds_on_can\\auto_diagnostic_final_for_web.py')
 
+@app.route('/uploader', methods = ['GET', 'POST'])
+def uploader():
+   if request.method == 'POST':
+      f = request.files['file']
+      # f.save(os.path.join(app.config['UPLOAD_FOLDER'],secure_filename(f.filename)))
+      # f.save(os.path.join(app.config['UPLOAD_FOLDER'],f.filename))
+      basepath = os.path.dirname(__file__)  # 当前文件所在路径
+      upload_path = os.path.join(basepath, 'upload',secure_filename(f.filename))  #注意：没有的文件夹一定要先创建，不然会提示没有该路径
+      # print(upload_path)
+      f.save(upload_path)
+      # 向自动诊断脚本发送excel地址
+      r.set("excel_name",upload_path)
+      # 启动诊断脚本
+      Process(target = open_auto_diagnostic()).start()
+      return {"result":"ok"}
+
 @app.route('/')
 def index():
    # r = redis.StrictRedis("127.0.0.1",6379)
-   return render_template("views/home.html")
+   return render_template("views/home_final.html")
+
+@app.route('/message')
+def message():
+   # r = redis.StrictRedis("127.0.0.1",6379)
+   return render_template("views/message.html")
 
 @app.route("/auto_diagnostic",methods = ["GET"])
 def auto_diagnostic():

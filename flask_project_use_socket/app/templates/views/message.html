@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../../static/layui/css/layui.css" media="all" />
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.3.0/socket.io.js"></script>
+    <script type="text/javascript" src="https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js"></script>
+    <title>自动化诊断工具</title>
+
+</head>
+<style>
+    * {
+        padding: 0;
+        margin: 0;
+        overflow-x: hidden;
+        overflow-y: hidden;
+    }
+</style>
+
+<body>
+    <div style="padding: 20px; background-color: #F2F2F2;">
+        <div class="layui-row layui-col-space15">
+            <div class="layui-col-md12">
+                <div class="layui-card">
+                    <div class="layui-card-header">
+                        <button type="button" class="layui-btn layui-btn-sm" onclick="start()">开始</button>
+                        <button type="button" class="layui-btn layui-btn-sm" onclick="stop()">停止</button>
+                        <button type="button" class="layui-btn layui-btn-sm" onclick="send()">发送</button>
+                    </div>
+                </div>
+            </div>
+            <div class="layui-col-md6">
+                <div class="layui-card" style="height: 556px;">
+                    <div class="layui-card-header">实时数据
+                        <button type="button" class="layui-btn layui-btn-xs layui-btn-sm" style="margin-left: 10px;"
+                            onclick="cheDiagnosticStatus()">单消息显示</button>
+                        <button type="button" class="layui-btn layui-btn-xs layui-btn-sm">滚动显示</button>
+                    </div>
+                    <div class="layui-card-body">
+                        <table class="layui-hide" id="test"></table>
+                    </div>
+                </div>
+            </div>
+            <div class="layui-col-md6">
+                <div class="layui-card">
+                    <div class="layui-card-header">自动诊断</div>
+                    <div class="layui-card-body">
+                        <label for="diagnostic_case_table">诊断表地址(本地):</label>
+                        <input id="diagnostic_case_table" type="text" placeholder="请填入诊断用例表地址" />
+                        <!-- <a href="#">开始自动诊断</a> -->
+                        <button type="button" class="layui-btn layui-btn-xs layui-btn-normal"
+                            onclick="start_diagnostic()">开始诊断</button>
+
+                        <label for="diagnostic_case_table">上传诊断表(远程):</label>
+                        <input id="diagnostic_case_table" type="text" placeholder="表名" disabled="disabled" />
+                        <!-- <a href="#">开始自动诊断</a> -->
+                        <button type="button" class="layui-btn layui-btn-xs layui-btn-normal" id="test3"><i
+                                class="layui-icon"></i>上传并诊断</button>
+                        <!-- <button type="button" class="layui-btn layui-btn-xs layui-btn-normal" onclick="start_diagnostic_by_remote()">上传并诊断</button> -->
+                    </div>
+                </div>
+            </div>
+            <div class="layui-col-md6">
+                <div class="layui-card">
+                    <div class="layui-card-header">其它</div>
+                    <div class="layui-card-body">
+                        其它
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+<script src="../../static/layui/layui.all.js"></script>
+<script>
+    layui.use(['table', 'layer', 'upload'], function () {
+        var table = layui.table;
+        var layer = layui.layer;
+        var $ = layui.jquery,
+            upload = layui.upload;
+
+
+
+        upload.render({ //允许上传的文件后缀
+            elem: '#test3',
+            url: 'http://127.0.0.1:5000/uploader',
+            accept: 'file',
+            // before: function (obj) {
+            //     // layer.tips('接口地址：' + this.url, this.item, { tips: 1 });
+            // 	// console.log(obj);
+            // },
+            done: function (res) {
+                layer.msg('上传成功');
+                console.log(res)
+
+                stop(); //发送停止接收数据消息
+
+                layer.open({
+                    // area:['100%','100%'],
+                    type: 3,
+                    // title:"提示",
+                    content: "自动诊断中",
+                    // shade: [0.8, '#393D49'],
+                    closeBtn: 0,
+                    btn: 0,
+                });
+
+                layer.msg('诊断开始，请耐心等待诊断结束');
+
+                namespace = '/Socket';
+                let socket = io.connect("http://" + document.domain + ':' + location.port + namespace);
+                socket.emit("message", {
+                    "data": "start_diagnostic"
+                });
+
+                socket.on('diagnostic_status', function (res) {
+                    // var t = res.data;
+                    // $("#t").text(t);
+                    console.log(res["data"]);
+                    if (res["data"] == "diagnostic_stop") {
+                        layer.closeAll();
+                    }
+                });
+            }
+        });
+
+        var data = new Array();
+        var tableIns = table.render({
+            elem: '#test'
+            // ,url:'http://127.0.0.1:5000/'
+            // ,cellMinWidth: 80 //全局定义常规单元格的最小宽度，layui 2.2.1 新增
+            ,
+            cols: [
+                [{
+                    field: '0',
+                    title: 'id'
+                },
+                {
+                    field: '1',
+                    title: '数据长度'
+                },
+                {
+                    field: '2',
+                    title: 'byte7'
+                },
+                {
+                    field: '3',
+                    title: 'byte6'
+                },
+                {
+                    field: '4',
+                    title: 'byte5'
+                },
+                {
+                    field: '5',
+                    title: 'byte4'
+                },
+                {
+                    field: '6',
+                    title: 'byte3'
+                },
+                {
+                    field: '7',
+                    title: 'byte2'
+                },
+                {
+                    field: '8',
+                    title: 'byte1'
+                },
+                {
+                    field: '9',
+                    title: 'byte0'
+                },
+                {
+                    field: '10',
+                    title: 'time'
+                },
+                ]
+            ],
+            data: data,
+            id: "test"
+        });
+
+
+        window.start = function () {
+            namespace = '/Socket';
+            let socket = io.connect("http://" + document.domain + ':' + location.port + namespace);
+            socket.emit("message", {
+                "data": "start"
+            });
+            socket.on('response', function (res) {
+                // var t = res.data;
+                // $("#t").text(t);
+                dataAnalyse(res);
+
+            });
+        }
+
+        window.stop = function () {
+            namespace = '/Socket';
+            let socket = io.connect("http://" + document.domain + ':' + location.port + namespace);
+            socket.emit("message", {
+                "data": "stop"
+            });
+            // socket.on('stop', function(res) {
+            // 	// var t = res.data;
+            // 	// $("#t").text(t);
+            // 	dataAnalyse(res);
+            // });
+        }
+
+        window.send = function () {
+            namespace = '/Socket';
+            let socket = io.connect("http://" + document.domain + ':' + location.port + namespace);
+            socket.emit("message", {
+                "data": "send"
+            });
+            // socket.on('response', function(res) {
+            // 	// var t = res.data;
+            // 	// $("#t").text(t);
+            // 	dataAnalyse(res);
+            // });
+        }
+
+        window.dataAnalyse = function (res) {
+            // console.log(res);
+            // data = [res];
+            temp = res.data.split(" ");
+            //去除数组空值
+            temp = temp.filter(function (s) {
+                return s && s.trim();
+            })
+            let temp_data = [];
+            for (let i = 0; i < temp.length; i++) {
+                temp_data[i.toString()] = temp[i];
+            }
+            // temp = JSON.stringify(temp);
+
+            data.push(temp);
+
+            // console.log(temp);
+            // data.push(res);
+            // console.log(data);
+            table.render({
+                elem: '#test',
+                // ,url:'http://127.0.0.1:5000/'
+                // ,cellMinWidth: 80 //全局定义常规单元格的最小宽度，layui 2.2.1 新增
+                height: 490,
+                cols: [
+                    [
+                        {
+                            field: '0',
+                            title: 'id'
+                        },
+                        {
+                            field: '1',
+                            title: '数据长度'
+                        },
+                        {
+                            field: '2',
+                            title: 'byte7'
+                        },
+                        {
+                            field: '3',
+                            title: 'byte6'
+                        },
+                        {
+                            field: '4',
+                            title: 'byte5'
+                        },
+                        {
+                            field: '5',
+                            title: 'byte4'
+                        },
+                        {
+                            field: '6',
+                            title: 'byte3'
+                        },
+                        {
+                            field: '7',
+                            title: 'byte2'
+                        },
+                        {
+                            field: '8',
+                            title: 'byte1'
+                        },
+                        {
+                            field: '9',
+                            title: 'byte0'
+                        },
+                        {
+                            field: '10',
+                            title: 'time'
+                        },
+                    ]
+                ]
+                // ,page:true
+                ,
+                page: {
+                    layout: ['count', 'prev', 'page', 'next', 'skip'] //自定义分页布局
+                    ,
+                    curr: Math.ceil(data.length / 10) //设定初始在第 5 页
+                    ,
+                    groups: 1 //只显示 1 个连续页码
+                },
+                limit: 10,
+                data: data,
+            });
+        }
+
+        window.start_diagnostic = function () {
+            diagnostic_case_table_address = $("#diagnostic_case_table").val();
+
+            $.ajax({
+                url: "auto_diagnostic",
+                data: {
+                    "diagnostic_case_table_address": diagnostic_case_table_address
+                },
+                dataType: "JSON",
+                type: "GET",
+                success: function (result) {
+                    console.log(result);
+                }
+            });
+
+            stop(); //发送停止接收数据消息
+
+            layer.open({
+                // area:['100%','100%'],
+                type: 3,
+                // title:"提示",
+                content: "自动诊断中",
+                // shade: [0.8, '#393D49'],
+                closeBtn: 0,
+                btn: 0,
+            });
+
+            layer.msg('诊断开始，请耐心等待诊断结束');
+
+            namespace = '/Socket';
+            let socket = io.connect("http://" + document.domain + ':' + location.port + namespace);
+            socket.emit("message", {
+                "data": "start_diagnostic"
+            });
+
+            socket.on('diagnostic_status', function (res) {
+                // var t = res.data;
+                // $("#t").text(t);
+                console.log(res["data"]);
+                if (res["data"] == "diagnostic_stop") {
+                    layer.closeAll();
+                }
+            });
+            // layer.closeAll()
+        }
+
+        // window.cheDiagnosticStatus = function(){
+        // 	namespace = '/Socket2';
+        // 	let socket = io.connect("http://" + document.domain + ':' + location.port + namespace);
+        // 	socket.emit("message", {
+        // 		"data": "start"
+        // 	});
+        // 	socket.on('response', function(res) {
+        // 		// var t = res.data;
+        // 		// $("#t").text(t);
+        // 		console.log(res)
+
+        // 	});
+        // }
+
+    });
+</script>
+
+</html>

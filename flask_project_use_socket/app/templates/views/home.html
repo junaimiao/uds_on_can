@@ -6,7 +6,6 @@
 		<link rel="stylesheet" href="../../static/layui/css/layui.css" media="all" />
 		<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.3.0/socket.io.js"></script>
 		<script type="text/javascript" src="https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js"></script>
-		<script src="../../static/layui/layui.all.js"></script>
 		<title>自动化诊断工具</title>
 
 	</head>
@@ -129,6 +128,7 @@
 		</div>
 
 	</body>
+	<script src="../../static/layui/layui.all.js"></script>
 	<script>
 
 
@@ -223,7 +223,7 @@
 			window.stop = function() {
 				namespace = '/Socket';
 				let socket = io.connect("http://" + document.domain + ':' + location.port + namespace);
-				socket.emit("stop", {
+				socket.emit("message", {
 					"data": "stop"
 				});
 				// socket.on('stop', function(res) {
@@ -236,7 +236,7 @@
 			window.send = function() {
 				namespace = '/Socket';
 				let socket = io.connect("http://" + document.domain + ':' + location.port + namespace);
-				socket.emit("send", {
+				socket.emit("message", {
 					"data": "send"
 				});
 				// socket.on('response', function(res) {
