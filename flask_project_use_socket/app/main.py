@@ -53,25 +53,17 @@ def uploader():
 
 @app.route('/')
 def index():
-   # r = redis.StrictRedis("127.0.0.1",6379)
    return render_template("views/home_final.html")
 
 @app.route('/message')
 def message():
-   # r = redis.StrictRedis("127.0.0.1",6379)
    return render_template("views/message.html")
 
 @app.route("/auto_diagnostic",methods = ["GET"])
 def auto_diagnostic():
    if request.method == "GET":
       result = request.args["diagnostic_case_table_address"]
-      # auto_diagnostic_final.run(result)
-      # print(result)
-      # os.system("cd ")
-      # print('python C:\\Users\\Administrator\\Desktop\\project_auto_uds_by_python\\uds_on_can\\flask_project_use_socket\\app\\controllers\\auto_diagnostic_final.py %s' % (result))
-      # 向自动诊断脚本发送excel地址
       r.set("excel_name",result)
-      # os.system('python C:\\Users\\Administrator\\Desktop\\project_auto_uds_by_python\\uds_on_can\\auto_diagnostic_final_for_web.py')
       Process(target = open_auto_diagnostic()).start()
       return {"result":"good"}
 
