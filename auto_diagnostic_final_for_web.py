@@ -434,10 +434,10 @@ if __name__ == "__main__":
             break
 
 
-    # sheet_table = ["1_1_DiagAndCommMgtFuncUnit",
-    #             "1_2_DataTransFuncUnit",
-    #             "1_3_StoredDataTransFuncUnit"]
-    sheet_table = ["1_3_StoredDataTransFuncUnit"]
+    sheet_table = ["1_1_DiagAndCommMgtFuncUnit",
+                "1_2_DataTransFuncUnit",
+                "1_3_StoredDataTransFuncUnit"]
+    # sheet_table = ["1_3_StoredDataTransFuncUnit"]
     sheet_table_title_dic = {
         "1_1_DiagAndCommMgtFuncUnit":{
             "会话状态":"F",
