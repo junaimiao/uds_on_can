@@ -42,11 +42,11 @@
         <li class="layui-nav-item"><a href="">退了</a></li>
       </ul>
     </div>
-    
+
     <div class="layui-side layui-bg-black">
       <div class="layui-side-scroll">
         <!-- 左侧导航区域（可配合layui已有的垂直导航） -->
-        <ul class="layui-nav layui-nav-tree"  lay-filter="nav_left">
+        <ul class="layui-nav layui-nav-tree" lay-filter="nav_left">
           <li class="layui-nav-item layui-nav-itemed">
             <a class="" href="javascript:;">基本功能</a>
             <dl class="layui-nav-child">
@@ -69,7 +69,7 @@
         </ul>
       </div>
     </div>
-    
+
     <div class="layui-body">
       <!-- 内容主体区域 -->
       <!-- <div style="padding: 15px;">内容主体区域</div> -->
@@ -82,15 +82,16 @@
       </div> -->
 
       <div class="message">
-        <iframe src="http://127.0.0.1:5000/message" style="width: 100%;height: 700px;"></iframe>
+        <iframe id="iframe" src="http://127.0.0.1:5000/message" style="width: 100%;height: 700px;"></iframe>
       </div>
 
-      <div class="test" style="display: none;">
+      <!-- <div class="test" style="display: none;">
         <iframe src="#" style="width: 100%;height: 700px;"></iframe>
-      </div>
-      
+        aaaaa
+      </div> -->
+
     </div>
-    
+
     <div class="layui-footer">
       <!-- 底部固定区域 -->
       © HZC_TOOL
@@ -105,7 +106,13 @@
     //监听导航点击
     element.on('nav(nav_left)', function (elem) {
       //console.log(elem)
-      layer.msg(elem.text());
+      // layer.msg(elem.text());
+      // console.log(elem.css("display","none"));
+      switch (elem.text()) {
+        case "实时数据":
+          $("#iframe").attr("src","http://127.0.0.1:5000/message"); 
+          break;
+      }
     });
   });
 </script>
