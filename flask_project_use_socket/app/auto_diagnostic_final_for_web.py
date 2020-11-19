@@ -29,9 +29,9 @@ import threading
 # 时间库
 import time
 # 自封装的can通信函数库文件
-import flask_project_use_socket.app.controllers.can_message as can
+import controllers.can_message as can
 # 自封装UDS服务库
-from flask_project_use_socket.app.controllers.uds_lib import UdsLib
+from controllers.uds_lib import UdsLib
 # redis数据库
 import redis
 # 日期库
