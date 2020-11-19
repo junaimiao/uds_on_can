@@ -33,7 +33,9 @@ app.register_blueprint(home, url_prefix="/home")
 def open_auto_diagnostic():
    # os.system('python E:\\FileForHZC\\02.git\\project_auto_uds_by_python\\uds_on_can\\auto_diagnostic_final_for_web.py')
    # print("open_auto_diagnostic")
-   os.system('start python E:\\FileForHZC\\02.git\\project_auto_uds_by_python\\uds_on_can\\auto_diagnostic_final_for_web.py')
+   # os.system('start python E:\\FileForHZC\\02.git\\project_auto_uds_by_python\\uds_on_can\\auto_diagnostic_final_for_web.py')
+   #获取当前文件路径，并打开该路径下的python文件
+   os.system("%s%s%s" % ("start python ",os.path.dirname(__file__),"/auto_diagnostic_final_for_web.py"))
 
 @app.route('/uploader', methods = ['GET', 'POST'])
 def uploader():
