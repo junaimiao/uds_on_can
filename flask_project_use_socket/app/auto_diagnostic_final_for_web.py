@@ -372,8 +372,6 @@ def sendMessage(threadName,ch,number,start_line_number = 11,physical_id = 0x79D,
                     sht.range("%s%s" % (current_sheet_table_title_dic["响应数据"],str(i-1))).value = "-"
                     # 设置开始发送下一行报文的消息
                     r.set("status","%s%s" % ("start",str(i)))
-        else:
-            break
     # r.set("test","stop")
     # r.delete("line_number")
     # 等待10s
