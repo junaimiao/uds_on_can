@@ -426,10 +426,10 @@ class TPService:
             # 保存连续帧有效字节个数
             self.continuous_data_number = (int(data[0],16) & 0x0F)*255 + int(data[1],16)
             # 计算后续连续帧个数
-            self.continuous_frame_number =  math.ceil((self.continuous_data_number - 6)/7)
+            self.continuous_frame_number =  math.ceil((self.continuous_data_number - 3)/7)
             # 将连续帧有效字节数据保存
-            for i in range(4):
-                self.continuous_data.append(data[i+4])
+            for i in range(3):
+                self.continuous_data.append(data[i+5])
             # 发送流控帧
             self.send_flow_control_frame(id = self.id)
             return True
